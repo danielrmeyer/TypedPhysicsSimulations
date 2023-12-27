@@ -149,7 +149,7 @@ Load in the app code:
 `load: src/main/scala/SHOApp.scala`
 And execute the main function:
 `sho()`
-Running the main methods from the console ensure sbt is in interactive mode and avoids
+Running the main methods from the console ensures sbt is in interactive mode and avoids
 immediate hang-up by sbt.
 
 You need to install sbt (simple build tool) and cd to the TypedPhysicsSimulations directory.
