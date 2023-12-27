@@ -1,10 +1,8 @@
 # Typed Physics Simulations
-This is an experiment in using Scala for physics simulations
+This is an experiment in using Scala for physics simulations.  The Open Source Physics Library is being
+used for core functionality.
 
-# Set-up
-
-The Open Source Physics Framework is included in the lib folder as osp.jar.
-
+The examples are motivated by the book "Introduction to Computer Simulation Methods" by Harvey Gould, Jan Tobochnik, and Wolfgang Christian.
 
 # Project Goals
 
@@ -142,7 +140,7 @@ def main(): Unit = {
 }
 ```
 
-#How to run the code
+# How to run the code
 
 Right now the code is organized as a series of apps under src/main/scala.  The simplest way to
 run an example app is to use the repl:
