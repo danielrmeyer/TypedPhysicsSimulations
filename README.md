@@ -24,10 +24,9 @@ no longer just Doubles but now have proper physical dimensions.  The compiler is
 doing dimensional analysis.
 
 ```scala
-import org.opensourcephysics.controls.{AbstractAnimation, Animation, OSPControl}
-import org.opensourcephysics.display.{DrawingFrame, DrawingPanel, PlottingPanel, Stripchart}
-import org.opensourcephysics.display.Circle
+import org.opensourcephysics.controls.{AbstractAnimation, OSPControl}
 import org.opensourcephysics.display.axes.XAxis
+import org.opensourcephysics.display.*
 import org.opensourcephysics.numerics.{ODE, ODESolver, RK4}
 
 // fundamental coulomb types and methods
@@ -36,56 +35,56 @@ import coulomb.syntax.*
 
 // algebraic definitions
 import algebra.instances.all.given
-import coulomb.ops.algebra.all.given
 
 // unit and value type policies for operations
 import coulomb.policy.standard.given
+
 import scala.language.implicitConversions
 
 // unit definitions
+import coulomb.units.mks.Newton
 import coulomb.units.si.{*, given}
 import coulomb.units.time.Second
-import coulomb.units.mks.Newton
 
 class SHOModel extends Circle with ODE {
-  val initialState = (0.0.withUnit[Meter], 0.0.withUnit[Meter / Second], 0.0.withUnit[Meter])
-
-  // We need this mutable state which is an array of doubles to work with the ODE interface
-  var state:Array[Double] = Array(
-    initialState._1.value,
-    initialState._2.value,
-    initialState._3.value
-  )
-
+  val state = Array[Double](0.0, 0.0, 0.0) // Mutable array for ODE interface
   val k = 1.withUnit[Newton / Meter]; // spring constant
-  val b = 0.2.withUnit[Newton * Second/ Meter] // damping constant
+  val b = 0.2.withUnit[Newton * Second / Meter] // damping constant
 
-  val ode_solver:ODESolver = new RK4(this)
+  // ODESolver will loop for state array, getState and getRate methods.
+  val ode_solver: ODESolver = new RK4(this)
 
-  def initialize(x:Quantity[Double, Meter], v:Quantity[Double, Meter / Second], t:Quantity[Double, Second]) =
+  def initialize(
+                  x: Quantity[Double, Meter],
+                  v: Quantity[Double, Meter / Second],
+                  t: Quantity[Double, Second]
+                ) =
     this.x = x.value
-    state(0) = x.value
-    state(1) = v.value
-    state(2) = t.value
+
+  state(0) = x.value
+  state(1) = v.value
+  state(2) = t.value
 
   def getTime(): Double = state(2)
 
+  // ODE interface
   def getState(): Array[Double] = state
 
+  // ODE interface
   def getRate(state: Array[Double], rate: Array[Double]): Unit =
-    val x = state(0).withUnit[Meter]
-    val v = state(1).withUnit[Meter / Second]
+  val x = state(0).withUnit[Meter]
+  val v = state(1).withUnit[Meter / Second]
 
-    // Here we see the compiler doing dimensional analysis for us
-    val force:Quantity[Double, Newton] = -k*x-b*v
+  //Here we see the compiler do dimensional analysis for us
+  val force: Quantity[Double, Newton] = -k * x - b * v
 
-    rate(0) = state(1)
-    rate(1) = force.value
-    rate(2) = 1
+  rate(0) = state(1)
+  rate(1) = force.value
+  rate(2) = 1
 
   def move(): Unit =
     ode_solver.step()
-    setX(state(0))
+  setX(state(0))
 }
 
 class SHOView extends AbstractAnimation {
@@ -107,39 +106,38 @@ class SHOView extends AbstractAnimation {
 
   override def initializeAnimation(): Unit =
     super.initializeAnimation()
-    val x:Double = control.getDouble("x0")
-    val v:Double = control.getDouble("v0")
+  val x: Double = control.getDouble("x0")
+  val v: Double = control.getDouble("v0")
 
-    sho.initialize(
-      x.withUnit[Meter],
-      v.withUnit[Meter/Second],
-      0.withUnit[Second]
-    )
-    
-    drawing.setMessage("t=0")
-    stripChart.clear()
-    stripChart.append(0, x)
-    drawing.repaint()
-    plot.repaint()
+  sho.initialize(
+    x.withUnit[Meter],
+    v.withUnit[Meter / Second],
+    0.withUnit[Second]
+  )
+
+  drawing.setMessage("t=0")
+  stripChart.clear()
+  stripChart.append(0, x)
+  drawing.repaint()
+  plot.repaint()
 
   override def doStep(): Unit =
     sho.move()
-    stripChart.append(sho.getTime(), sho.getX())
-    drawing.setMessage("t="+decimalFormat.format(sho.getTime()))
-    drawing.repaint()
-    plot.repaint()
+  stripChart.append(sho.getTime(), sho.getX())
+  drawing.setMessage("t=" + decimalFormat.format(sho.getTime()))
+  drawing.repaint()
+  plot.repaint()
 
 
   override def resetAnimation(): Unit =
     super.resetAnimation()
-    control.setValue("x0", 4)
-    control.setValue("v0", 0)
-    initializeAnimation()
+  control.setValue("x0", 4)
+  control.setValue("v0", 0)
+  initializeAnimation()
 }
 
 @main
 def main(): Unit = {
-  println("hello")
   val animation = new SHOView()
   val control = new OSPControl(animation)
   control.addButton("startAnimation", "Start")
