@@ -13,7 +13,7 @@ See if scala 3 can create a compelling environment for physics simulation work.
 
 # Sample Physics Simulation
 
-In the sample code below we are simulating the SHO using scala 3.  Physical units are
+In the sample code below we are simulating the damped simple harmonic oscillator using scala 3.  Physical units are
 no longer just Doubles but now have proper physical dimensions.  The compiler is now
 doing dimensional analysis.
 
