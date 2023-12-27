@@ -43,7 +43,7 @@ class SHOModel extends Circle with ODE {
   val k = 1.withUnit[Newton / Meter]; // spring constant
   val b = 0.2.withUnit[Newton * Second / Meter] // damping constant
 
-  // ODESolver will loop for state array, getState and getRate methods.
+  // ODESolver will look for state array, getState and getRate methods.
   val ode_solver: ODESolver = new RK4(this)
 
   def initialize(
