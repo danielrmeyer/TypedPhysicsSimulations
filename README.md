@@ -53,9 +53,9 @@ class SHOModel extends Circle with ODE {
                 ) =
     this.x = x.value
 
-  state(0) = x.value
-  state(1) = v.value
-  state(2) = t.value
+    state(0) = x.value
+    state(1) = v.value
+    state(2) = t.value
 
   def getTime(): Double = state(2)
 
@@ -64,19 +64,19 @@ class SHOModel extends Circle with ODE {
 
   // ODE interface
   def getRate(state: Array[Double], rate: Array[Double]): Unit =
-  val x = state(0).withUnit[Meter]
-  val v = state(1).withUnit[Meter / Second]
+    val x = state(0).withUnit[Meter]
+    val v = state(1).withUnit[Meter / Second]
 
-  //Here we see the compiler do dimensional analysis for us
-  val force: Quantity[Double, Newton] = -k * x - b * v
+    //Here we see the compiler do dimensional analysis for us
+    val force: Quantity[Double, Newton] = -k * x - b * v
 
-  rate(0) = state(1)
-  rate(1) = force.value
-  rate(2) = 1
+    rate(0) = state(1)
+    rate(1) = force.value
+    rate(2) = 1
 
   def move(): Unit =
     ode_solver.step()
-  setX(state(0))
+    setX(state(0))
 }
 
 class SHOView extends AbstractAnimation {
@@ -98,10 +98,10 @@ class SHOView extends AbstractAnimation {
 
   override def initializeAnimation(): Unit =
     super.initializeAnimation()
-  val x: Double = control.getDouble("x0")
-  val v: Double = control.getDouble("v0")
+    val x: Double = control.getDouble("x0")
+    val v: Double = control.getDouble("v0")
 
-  sho.initialize(
+    sho.initialize(
     x.withUnit[Meter],
     v.withUnit[Meter / Second],
     0.withUnit[Second]
@@ -115,17 +115,17 @@ class SHOView extends AbstractAnimation {
 
   override def doStep(): Unit =
     sho.move()
-  stripChart.append(sho.getTime(), sho.getX())
-  drawing.setMessage("t=" + decimalFormat.format(sho.getTime()))
-  drawing.repaint()
-  plot.repaint()
+    stripChart.append(sho.getTime(), sho.getX())
+    drawing.setMessage("t=" + decimalFormat.format(sho.getTime()))
+    drawing.repaint()
+    plot.repaint()
 
 
   override def resetAnimation(): Unit =
     super.resetAnimation()
-  control.setValue("x0", 4)
-  control.setValue("v0", 0)
-  initializeAnimation()
+    control.setValue("x0", 4)
+    control.setValue("v0", 0)
+    initializeAnimation()
 }
 
 @main
