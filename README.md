@@ -3,13 +3,7 @@ This is an experiment in using Scala for physics simulations
 
 # Set-up
 
-You will need to get the Open Source Physics Framework built and add the jar to the project locally.
-With sbt, create a lib directory and add the jar there.  To build the jar you currently need to use
-the Eclipse IDE to build and export a jar file from the OSP source code:
-https://github.com/OpenSourcePhysics
-
-I plan to create a better solution to this if the experiment works out.  Feel free to reach out
-for help if you are interested in running my code.
+The Open Source Physics Framework is included in the lib folder as osp.jar.
 
 
 # Project Goals
@@ -147,3 +141,17 @@ def main(): Unit = {
 
 }
 ```
+
+#How to run the code
+
+Right now the code is organized as a series of apps under src/main/scala.  The simplest way to
+run an example app is to use the repl:
+`sbt console`
+Load in the app code:
+`load: src/main/scala/SHOApp.scala`
+And execute the main function:
+`sho()`
+Running the main methods from the console ensure sbt is in interactive mode and avoids
+immediate hang-up by sbt.
+
+You need to install sbt (simple build tool) and cd to the TypedPhysicsSimulations directory.

@@ -28,17 +28,6 @@ class SHOModel extends Circle with ODE {
   // ODESolver will loop for state array, getState and getRate methods.
   val ode_solver: ODESolver = new RK4(this)
 
-  def initialize(
-                  x: Quantity[Double, Meter],
-                  v: Quantity[Double, Meter / Second],
-                  t: Quantity[Double, Second]
-                ) =
-    this.x = x.value
-
-    state(0) = x.value
-    state(1) = v.value
-    state(2) = t.value
-
   def getTime(): Double = state(2)
 
   // ODE interface
@@ -55,6 +44,17 @@ class SHOModel extends Circle with ODE {
     rate(0) = state(1)
     rate(1) = force.value
     rate(2) = 1
+
+  def initialize(
+                  x: Quantity[Double, Meter],
+                  v: Quantity[Double, Meter / Second],
+                  t: Quantity[Double, Second]
+                ) =
+    setX(x.value)
+
+    state(0) = x.value
+    state(1) = v.value
+    state(2) = t.value
 
   def move(): Unit =
     ode_solver.step()
@@ -111,7 +111,7 @@ class SHOView extends AbstractAnimation {
 }
 
 @main
-def main(): Unit = {
+def sho(): Unit = {
   val animation = new SHOView()
   val control = new OSPControl(animation)
   control.addButton("startAnimation", "Start")

@@ -4,7 +4,7 @@ import javax.swing.JFrame
 import javax.swing.WindowConstants.EXIT_ON_CLOSE
 
 @main
-def chap1(): Unit = {
+def sin(): Unit = {
   println("Hello world!")
   val frame = new PlotFrame("position", "amplitude", "First Plot")
   frame.setSize(400, 400)
