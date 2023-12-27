@@ -33,7 +33,7 @@ class SHOModel extends Circle with ODE {
   )
 
   val k = 1.withUnit[Newton / Meter]; // spring constant
-  val b = 0.2.withUnit[Newton * Second/ Meter] // damping constant
+  val b = 0.2.withUnit[Newton * Second / Meter] // damping constant
 
   val ode_solver:ODESolver = new RK4(this)
 
@@ -91,7 +91,7 @@ class SHOView extends AbstractAnimation {
       v.withUnit[Meter/Second],
       0.withUnit[Second]
     )
-    
+
     drawing.setMessage("t=0")
     stripChart.clear()
     stripChart.append(0, x)

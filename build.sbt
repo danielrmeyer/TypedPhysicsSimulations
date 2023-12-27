@@ -9,4 +9,3 @@ lazy val root = (project in file("."))
 
 libraryDependencies += "com.manyangled" %% "coulomb-core" % "0.8.0"
 libraryDependencies += "com.manyangled" %% "coulomb-units" % "0.8.0"
-libraryDependencies += "org.typelevel" %% "squants" % "1.8.3"
