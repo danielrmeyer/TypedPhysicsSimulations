@@ -19,6 +19,10 @@ See if scala 3 can create a compelling environment for physics simulation work.
 
 # Sample
 
+In the sample code below we are simulating the SHO using scala 3.  Physical units are
+no longer just Doubles but now have proper physical dimensions.  The compiler is now
+doing dimensional analysis.
+
 ```scala
 import org.opensourcephysics.controls.{AbstractAnimation, Animation, OSPControl}
 import org.opensourcephysics.display.{DrawingFrame, DrawingPanel, PlottingPanel, Stripchart}
