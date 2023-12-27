@@ -105,13 +105,13 @@ class SHOView extends AbstractAnimation {
     x.withUnit[Meter],
     v.withUnit[Meter / Second],
     0.withUnit[Second]
-  )
+    )
 
-  drawing.setMessage("t=0")
-  stripChart.clear()
-  stripChart.append(0, x)
-  drawing.repaint()
-  plot.repaint()
+    drawing.setMessage("t=0")
+    stripChart.clear()
+    stripChart.append(0, x)
+    drawing.repaint()
+    plot.repaint()
 
   override def doStep(): Unit =
     sho.move()
