@@ -86,7 +86,12 @@ class SHOView extends AbstractAnimation {
     val x:Double = control.getDouble("x0")
     val v:Double = control.getDouble("v0")
 
-    sho.initialize(x.withUnit[Meter], v.withUnit[Meter/Second], 0.withUnit[Second]) //TODO start adding units of measure here?
+    sho.initialize(
+      x.withUnit[Meter],
+      v.withUnit[Meter/Second],
+      0.withUnit[Second]
+    )
+    
     drawing.setMessage("t=0")
     stripChart.clear()
     stripChart.append(0, x)
