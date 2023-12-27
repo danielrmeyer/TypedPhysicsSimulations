@@ -44,10 +44,9 @@ import coulomb.units.time.Second
 import coulomb.units.mks.Newton
 
 class SHOModel extends Circle with ODE {
-//  var state = Array[Double](0.0, 0.0, 0.0)  //TODO Units should be (meters, meters/second, second)
   val initialState = (0.0.withUnit[Meter], 0.0.withUnit[Meter / Second], 0.0.withUnit[Meter])
 
-  // We need this mutable state which is an array of doubles
+  // We need this mutable state which is an array of doubles to work with the ODE interface
   var state:Array[Double] = Array(
     initialState._1.value,
     initialState._2.value,
@@ -58,7 +57,6 @@ class SHOModel extends Circle with ODE {
   val b = 0.2.withUnit[Newton * Second/ Meter] // damping constant
 
   val ode_solver:ODESolver = new RK4(this)
-
 
   def initialize(x:Quantity[Double, Meter], v:Quantity[Double, Meter / Second], t:Quantity[Double, Second]) =
     this.x = x.value
@@ -74,7 +72,7 @@ class SHOModel extends Circle with ODE {
     val x = state(0).withUnit[Meter]
     val v = state(1).withUnit[Meter / Second]
 
-    //Here we see the compiler do dimensional analysis for us
+    // Here we see the compiler doing dimensional analysis for us
     val force:Quantity[Double, Newton] = -k*x-b*v
 
     rate(0) = state(1)
