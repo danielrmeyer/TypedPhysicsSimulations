@@ -1,4 +1,4 @@
-# TypedPhysicsSimulations
+# Typed Physics Simulations
 This is an experiment in using Scala for physics simulations
 
 # Set-up
