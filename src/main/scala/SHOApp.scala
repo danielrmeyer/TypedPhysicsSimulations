@@ -16,16 +16,19 @@ import coulomb.policy.standard.given
 import scala.language.implicitConversions
 
 // unit definitions
-import coulomb.units.mks.Newton
-import coulomb.units.si.{*, given}
-import coulomb.units.time.Second
+import coulomb.units.mks.{Newton, Meter, Second}
+//import coulomb.units.si.{*, given}
+//import coulomb.units.time.Second
 
+class SHO2Model extends Circle {
+
+}
 class SHOModel extends Circle with ODE {
   val state = Array[Double](0.0, 0.0, 0.0) // Mutable array for ODE interface
   val k = 1.withUnit[Newton / Meter]; // spring constant
   val b = 0.2.withUnit[Newton * Second / Meter] // damping constant
 
-  // ODESolver will loop for state array, getState and getRate methods.
+  // ODESolver will look for state array, getState and getRate methods.
   val ode_solver: ODESolver = new RK4(this)
 
   def getTime(): Double = state(2)
@@ -39,11 +42,14 @@ class SHOModel extends Circle with ODE {
     val v = state(1).withUnit[Meter / Second]
 
     //Here we see the compiler do dimensional analysis for us
-    val force: Quantity[Double, Newton] = -k * x - b * v
+    val force: Quantity[Double, Newton] = computeForce(x,v)
 
     rate(0) = state(1)
     rate(1) = force.value
     rate(2) = 1
+
+  def computeForce(x:Quantity[Double, Meter], v:Quantity[Double, Meter / Second]): Quantity[Double, Newton] =
+    -k * x - b * v
 
   def initialize(
                   x: Quantity[Double, Meter],
