@@ -68,7 +68,7 @@ Right now the code is organized as a series of apps under src/main/scala.  The s
 run an example app is to use the repl:
 `sbt console`
 Load in the app code:
-`load: src/main/scala/SHOApp.scala`
+`:load src/main/scala/SHOApp.scala`
 And execute the main function:
 `sho()`
 Running the main methods from the console ensures sbt is in interactive mode and avoids
