@@ -1,8 +1,8 @@
 
+import numerics.{ODE, RK4}
 import org.opensourcephysics.controls.{AbstractAnimation, OSPControl}
 import org.opensourcephysics.display.*
 import org.opensourcephysics.display.axes.XAxis
-import numerics.{ODE, RK4}
 
 // fundamental coulomb types and methods
 import coulomb.*
@@ -17,9 +17,7 @@ import coulomb.policy.standard.given
 import scala.language.implicitConversions
 
 // unit definitions
-import coulomb.units.mks.{Meter, Newton, Second, Kilogram}
-
-
+import coulomb.units.mks.{Kilogram, Meter, Newton, Second}
 import numerics.State
 
 class SHOModel extends Circle with ODE {
