@@ -1,3 +1,4 @@
+import coulomb.units.us.Kilogram
 import org.opensourcephysics.controls.{AbstractAnimation, OSPControl}
 import org.opensourcephysics.display.*
 import org.opensourcephysics.display.axes.XAxis
@@ -17,14 +18,20 @@ import coulomb.policy.standard.given
 import scala.language.implicitConversions
 
 // unit definitions
-import coulomb.units.mks.{Meter, Newton, Second}
+import coulomb.units.mks.{Meter, Newton, Second, Kilogram}
 //import coulomb.units.si.{*, given}
 //import coulomb.units.time.Second
 
 
+import numerics.State
 
 class SHOModel extends Circle with ODE {
-  var state = Array[Double](0.0, 0.0, 0.0) // Mutable array for ODE interface
+  //var state = Array[Double](0.0, 0.0, 0.0) // Mutable array for ODE interface
+
+  var state = State(0.withUnit[Meter], 0.withUnit[Meter / Second], 0.withUnit[Second])
+
+
+  //var state = (0.0.withUnit[Meter], 0.0.withUnit[Meter], 0.0.withUnit[Meter])
 
   val k = 1.withUnit[Newton / Meter]; // spring constant
   val b = 0.2.withUnit[Newton * Second / Meter] // damping constant
@@ -32,24 +39,29 @@ class SHOModel extends Circle with ODE {
   // ODESolver will look for state array, getState and getRate methods.
   val ode_solver = new RK4(this)
 
-  def getTime(): Double = state(2)
+  def getTime(): Quantity[Double, Second] = state.t
 
   // ODE interface
-  def getState(): Array[Double] = state
+  def getState() = state
 
   // ODE interface
-  def getRate(state: Array[Double]): Array[Double] =
-    val x = state(0).withUnit[Meter]
-    val v = state(1).withUnit[Meter / Second]
+  def getRate(state: State): State =
+    val x = state.x
+    val v = state.v
+//    val x = state(0).withUnit[Meter]
+//    val v = state(1).withUnit[Meter / Second]
 
     //Here we see the compiler do dimensional analysis for us
     val force: Quantity[Double, Newton] = computeForce(x, v)
 
+    val rate = force / 1.withUnit[Kilogram]
 
-    Array(state(1), force.value, 1)
-  //    rate(0) = state(1)
-  //    rate(1) = force.value
-  //    rate(2) = 1
+    //    rate(0) = state(1)
+    //    rate(1) = force.value
+    //    rate(2) = 1
+
+    State(v * 1.0.withUnit[Second], rate * 1.0.withUnit[Second], 1.withUnit[Second])
+
 
   def computeForce(x: Quantity[Double, Meter], v: Quantity[Double, Meter / Second]): Quantity[Double, Newton] =
     -k * x - b * v
@@ -58,16 +70,19 @@ class SHOModel extends Circle with ODE {
                   x: Quantity[Double, Meter],
                   v: Quantity[Double, Meter / Second],
                   t: Quantity[Double, Second]
-                ) =
+                ): Unit =
     setX(x.value)
+    this.state = State(x, v, t)
 
-    state(0) = x.value
-    state(1) = v.value
-    state(2) = t.value
+//    state(0) = x.value
+//    state(1) = v.value
+//    state(2) = t.value
+
+    (x, v, t)
 
   def move(): Unit =
     this.state = ode_solver.step(this.state)
-    setX(this.state(0))
+    setX(this.state.x.value)
 }
 
 class SHOView extends AbstractAnimation {
@@ -106,7 +121,7 @@ class SHOView extends AbstractAnimation {
 
   override def doStep(): Unit =
     sho.move()
-    stripChart.append(sho.getTime(), sho.getX())
+    stripChart.append(sho.getTime().value, sho.getX())
     drawing.setMessage("t=" + decimalFormat.format(sho.getTime()))
     drawing.repaint()
     plot.repaint()
