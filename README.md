@@ -18,6 +18,9 @@ replaced by ODE.scala and RK4.scala under the numerics package.  The entire proc
 to make sense from beginning to end.
 
 ```scala
+
+import numerics.State
+
 class SHOModel extends Circle with ODE {
 
   var state = State(0.withUnit[Meter], 0.withUnit[Meter / Second], 0.withUnit[Second])
@@ -33,15 +36,29 @@ class SHOModel extends Circle with ODE {
 
   // ODE interface
   def getRate(state: State): State =
-  val x = state.x
-  val v = state.v
-  //Here we see the compiler do dimensional analysis for us
-  val force: Quantity[Double, Newton] = -k * x - b * v
+    val x = state.x
+    val v = state.v
+    //Here we see the compiler do dimensional analysis for us
+    val force: Quantity[Double, Newton] = -k * x - b * v
 
-  val rate = force / 1.withUnit[Kilogram]
+    val rate = force / 1.withUnit[Kilogram]
 
-  State(v * 1.0.withUnit[Second], rate * 1.0.withUnit[Second], 1.withUnit[Second])
+    State(v * 1.0.withUnit[Second], rate * 1.0.withUnit[Second], 1.withUnit[Second])
 
+
+  def initialize(
+                  x: Quantity[Double, Meter],
+                  v: Quantity[Double, Meter / Second],
+                  t: Quantity[Double, Second]
+                ): Unit =
+    setX(x.value)
+
+    this.state = State(x, v, t)
+
+  def move(): Unit =
+    this.state = ode_solver.step(this.state)
+    setX(this.state.x.value)
+}
 
 ```
 
