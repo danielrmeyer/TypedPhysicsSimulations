@@ -1,8 +1,7 @@
-import coulomb.units.us.Kilogram
+
 import org.opensourcephysics.controls.{AbstractAnimation, OSPControl}
 import org.opensourcephysics.display.*
 import org.opensourcephysics.display.axes.XAxis
-//import org.opensourcephysics.numerics.{ODE, ODESolver, RK4}
 import numerics.{ODE, RK4}
 
 // fundamental coulomb types and methods
@@ -19,24 +18,16 @@ import scala.language.implicitConversions
 
 // unit definitions
 import coulomb.units.mks.{Meter, Newton, Second, Kilogram}
-//import coulomb.units.si.{*, given}
-//import coulomb.units.time.Second
 
 
 import numerics.State
 
 class SHOModel extends Circle with ODE {
-  //var state = Array[Double](0.0, 0.0, 0.0) // Mutable array for ODE interface
 
   var state = State(0.withUnit[Meter], 0.withUnit[Meter / Second], 0.withUnit[Second])
 
-
-  //var state = (0.0.withUnit[Meter], 0.0.withUnit[Meter], 0.0.withUnit[Meter])
-
   val k = 1.withUnit[Newton / Meter]; // spring constant
   val b = 0.2.withUnit[Newton * Second / Meter] // damping constant
-
-  // ODESolver will look for state array, getState and getRate methods.
   val ode_solver = new RK4(this)
 
   def getTime(): Quantity[Double, Second] = state.t
@@ -48,23 +39,13 @@ class SHOModel extends Circle with ODE {
   def getRate(state: State): State =
     val x = state.x
     val v = state.v
-//    val x = state(0).withUnit[Meter]
-//    val v = state(1).withUnit[Meter / Second]
-
     //Here we see the compiler do dimensional analysis for us
-    val force: Quantity[Double, Newton] = computeForce(x, v)
+    val force: Quantity[Double, Newton] = -k * x - b * v
 
     val rate = force / 1.withUnit[Kilogram]
 
-    //    rate(0) = state(1)
-    //    rate(1) = force.value
-    //    rate(2) = 1
-
     State(v * 1.0.withUnit[Second], rate * 1.0.withUnit[Second], 1.withUnit[Second])
 
-
-  def computeForce(x: Quantity[Double, Meter], v: Quantity[Double, Meter / Second]): Quantity[Double, Newton] =
-    -k * x - b * v
 
   def initialize(
                   x: Quantity[Double, Meter],
@@ -72,13 +53,8 @@ class SHOModel extends Circle with ODE {
                   t: Quantity[Double, Second]
                 ): Unit =
     setX(x.value)
+
     this.state = State(x, v, t)
-
-//    state(0) = x.value
-//    state(1) = v.value
-//    state(2) = t.value
-
-    (x, v, t)
 
   def move(): Unit =
     this.state = ode_solver.step(this.state)
