@@ -4,7 +4,7 @@ import coulomb.*
 
 // algebraic definitions
 import algebra.instances.all.given
-
+import coulomb.ops.algebra.all.{*, given}
 // unit and value type policies for operations
 import coulomb.policy.standard.given
 

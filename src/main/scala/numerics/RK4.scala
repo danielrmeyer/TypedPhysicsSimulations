@@ -6,10 +6,10 @@ import coulomb.syntax.*
 
 // algebraic definitions
 import algebra.instances.all.given
+import coulomb.ops.algebra.all.{*, given}
 
 // unit and value type policies for operations
 import coulomb.policy.standard.given
-
 import scala.language.implicitConversions
 
 // unit definitions
@@ -43,9 +43,9 @@ class RK4(ode:ODE, val stepSize:Double = 0.1) {
 
     val rate4 = ode.getRate(estimated_state)
     val new_state = State(
-      state.x + (rate1.x + 2.withUnit[Meter] + rate2.x + rate3.x * 2 + rate4.x) * stepSize / 6.0,
-      state.v + (rate1.v + 2.withUnit[Meter / Second] + rate2.v + rate3.v * 2 + rate4.v) * stepSize / 6.0,
-      state.t + (rate1.t + 2.withUnit[Second] + rate2.t + rate3.t * 2 + rate4.t) * stepSize / 6.0
+      state.x + stepSize * (rate1.x + 2.withUnit[Meter] + rate2.x + rate3.x * 2 + rate4.x) / 6.0,
+      state.v + stepSize * (rate1.v + 2.withUnit[Meter / Second] + rate2.v + rate3.v * 2 + rate4.v) / 6.0,
+      state.t + stepSize * (rate1.t + 2.withUnit[Second] + rate2.t + rate3.t * 2 + rate4.t) / 6.0
     )
 
     new_state

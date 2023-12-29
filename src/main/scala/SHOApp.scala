@@ -1,31 +1,22 @@
-
 import numerics.{ODE, RK4}
 import org.opensourcephysics.controls.{AbstractAnimation, OSPControl}
 import org.opensourcephysics.display.*
 import org.opensourcephysics.display.axes.XAxis
-
-// fundamental coulomb types and methods
 import coulomb.*
 import coulomb.syntax.*
-
-// algebraic definitions
 import algebra.instances.all.given
-
-// unit and value type policies for operations
+import coulomb.ops.algebra.all.{*, given}
 import coulomb.policy.standard.given
-
 import scala.language.implicitConversions
-
-// unit definitions
 import coulomb.units.mks.{Kilogram, Meter, Newton, Second}
 import numerics.State
 
 class SHOModel extends Circle with ODE {
+  val k = 1.withUnit[Newton / Meter]; // spring constant
+  val b = 0.2.withUnit[Newton * Second / Meter] // damping constant
 
   var state = State(0.withUnit[Meter], 0.withUnit[Meter / Second], 0.withUnit[Second])
 
-  val k = 1.withUnit[Newton / Meter]; // spring constant
-  val b = 0.2.withUnit[Newton * Second / Meter] // damping constant
   val ode_solver = new RK4(this)
 
   def getTime(): Quantity[Double, Second] = state.t
@@ -39,9 +30,7 @@ class SHOModel extends Circle with ODE {
     val v = state.v
     //Here we see the compiler do dimensional analysis for us
     val force: Quantity[Double, Newton] = -k * x - b * v
-
     val rate = force / 1.withUnit[Kilogram]
-
     State(v * 1.0.withUnit[Second], rate * 1.0.withUnit[Second], 1.withUnit[Second])
 
 
