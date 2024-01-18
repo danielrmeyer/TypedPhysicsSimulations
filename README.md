@@ -37,7 +37,7 @@ import coulomb.units.mks.{Meter, Second}
 
 
 @main
-def simulate() =
+def firstFallingBallApp() =
   val y0 = 10.0.withUnit[Meter]
   val v0 = 0.0.withUnit[Meter / Second]
 
