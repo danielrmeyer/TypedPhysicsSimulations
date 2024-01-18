@@ -31,12 +31,9 @@ def simulate() =
     t = t + dt
 
   println("Results")
-  println("final time = " + t)
-  println("y = "+y+" v = " + v)
+  println("final time = " + t.show)
+  println("y = "+y.show+" v = " + v.show)
   
   val yAnalytic = y0 + v0 * t - 0.5 * g * t * t
   val vAnalytic = v0 - g * t
-  System.out.println("analytic y = " + yAnalytic + " v = " + vAnalytic)
-
-
-  println("Hello")
+  System.out.println("analytic y = " + yAnalytic.show + " v = " + vAnalytic.show)
