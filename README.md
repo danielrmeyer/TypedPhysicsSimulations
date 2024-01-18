@@ -75,10 +75,33 @@ analytic y = 5.0015099999999935 m v = -9.898000000000007 m/s
 Right now the code is organized as a series of apps under src/main/scala.  The simplest way to
 run an example app is to use the repl:
 `sbt console`
-Load in the app code:
-`:load src/main/scala/SHOApp.scala`
-And execute the main function:
-`sho()`
+Load in the app code and run the main method:
+```bash
+sbt console
+                                                                                
+scala> :load src/main/scala/FirstFallingBallApp.scala
+def firstFallingBallApp(): Unit
+                                                                                
+scala> firstFallingBallApp()
+Results
+final time = 1.0100000000000007 s
+y = 5.051000000000003 m v = -9.898000000000007 m/s
+analytic y = 5.0015099999999935 m v = -9.898000000000007 m/s
+                                                                                
+scala> 
+
+```
+
+To run the SHO simulations do the following:
+```bash
+scala> :load src/main/scala/SHOApp.scala
+// defined class SHOModel
+// defined class SHOView
+def shoApp(): Unit
+                                                                                
+scala> shoApp()
+
+```
 Running the main methods from the console ensures sbt is in interactive mode and avoids
 immediate hang-up by sbt.
 
