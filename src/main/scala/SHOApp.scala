@@ -98,7 +98,7 @@ class SHOView extends AbstractAnimation {
 }
 
 @main
-def sho(): Unit = {
+def shoApp(): Unit = {
   val animation = new SHOView()
   val control = new OSPControl(animation)
   control.addButton("startAnimation", "Start")
