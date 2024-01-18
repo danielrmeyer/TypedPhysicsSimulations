@@ -11,55 +11,63 @@ See if scala 3 can create a compelling environment for physics simulation work.
 
 # Sample Physics Simulation
 
-In the sample code below we are simulating the damped simple harmonic oscillator using scala 3.  Physical units are
+Below is a taste of how this looks.  Physical units are
 no longer just Doubles but now have proper physical dimensions thanks to Coulomb, a units of measure library.  The compiler is now
-doing dimensional analysis. To make this work I had to rewrite RK4.java nd ODE.java.  Those have been
+doing dimensional analysis. 
+
+Also implemented is a simple harmonic oscillator simulation.  To make that work I had to rewrite RK4.java nd ODE.java.  Those have been
 replaced by ODE.scala and RK4.scala under the numerics package.  The entire process now forces the dimensions
 to make sense from beginning to end.
 
 ```scala
 
-import numerics.State
+import coulomb.*
+import coulomb.syntax.*
 
-class SHOModel extends Circle with ODE {
+// algebraic definitions
+import algebra.instances.all.given
+import coulomb.ops.algebra.all.{*, given}
 
-  var state = State(0.withUnit[Meter], 0.withUnit[Meter / Second], 0.withUnit[Second])
+// unit and value type policies for operations
+import coulomb.policy.standard.given
+import scala.language.implicitConversions
 
-  val k = 1.withUnit[Newton / Meter]; // spring constant
-  val b = 0.2.withUnit[Newton * Second / Meter] // damping constant
-  val ode_solver = new RK4(this)
-
-  def getTime(): Quantity[Double, Second] = state.t
-
-  // ODE interface
-  def getState() = state
-
-  // ODE interface
-  def getRate(state: State): State =
-    val x = state.x
-    val v = state.v
-    //Here we see the compiler do dimensional analysis for us
-    val force: Quantity[Double, Newton] = -k * x - b * v
-
-    val rate = force / 1.withUnit[Kilogram]
-
-    State(v * 1.0.withUnit[Second], rate * 1.0.withUnit[Second], 1.withUnit[Second])
+// unit definitions
+import coulomb.units.mks.{Meter, Second}
 
 
-  def initialize(
-                  x: Quantity[Double, Meter],
-                  v: Quantity[Double, Meter / Second],
-                  t: Quantity[Double, Second]
-                ): Unit =
-    setX(x.value)
+@main
+def simulate() =
+  val y0 = 10.0.withUnit[Meter]
+  val v0 = 0.0.withUnit[Meter / Second]
 
-    this.state = State(x, v, t)
+  val dt = 0.01.withUnit[Second]
+  val g = 9.8.withUnit[Meter / (Second ^ 2)]
 
-  def move(): Unit =
-    this.state = ode_solver.step(this.state)
-    setX(this.state.x.value)
-}
+  var y = y0
+  var v = v0
+  var t = 0.0.withUnit[Second]
 
+  for(n <- 0 to 100)
+    y = y + v*dt
+    v = v - dt*g
+    t = t + dt
+
+  println("Results")
+  println("final time = " + t.show)
+  println("y = "+y.show+" v = " + v.show)
+  
+  val yAnalytic = y0 + v0 * t - 0.5 * g * t * t
+  val vAnalytic = v0 - g * t
+  System.out.println("analytic y = " + yAnalytic.show + " v = " + vAnalytic.show)
+
+```
+Running the above will give you the following output:
+```bash
+Results
+final time = 1.0100000000000007 s
+y = 5.051000000000003 m v = -9.898000000000007 m/s
+analytic y = 5.0015099999999935 m v = -9.898000000000007 m/s
 ```
 
 # How to run the code
