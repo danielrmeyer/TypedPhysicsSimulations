@@ -5,23 +5,45 @@
  * <http://www.opensourcephysics.org/>
  */
 
-package ch01
+package ch02
 
-import org.opensourcephysics.controls.{Animation, OSPControl}
+import org.opensourcephysics.display.Circle
 
-object SHOApp {
-  /**
-   * Starts the Scala application.
-   * @param args command line parameters
-   */
-  def main(args: Array[String]): Unit = {
-    val animation: Animation = new SHOView()
-    val control: OSPControl = new OSPControl(animation)
-    control.addButton("startAnimation", "Start")
-    control.addButton("stopAnimation", "Stop")
-    control.addButton("initializeAnimation", "Initialize")
-    animation.setControl(control)
+/**
+ * BouncingBall models a falling ball as it bounces off of a floor or a wall.
+ */
+
+import org.opensourcephysics.display.Circle
+
+class BouncingBall(initialX: Double, var vx: Double, initialY: Double, var vy: Double) extends Circle {
+
+  import BouncingBall._
+
+  // Initialize position using Circle's method
+  setXY(initialX, initialY)
+
+  def step(dt: Double): Unit = {
+    val newX = getX + vx * dt
+    val newY = getY + vy * dt
+    vy -= g * dt
+
+    if (newX > WALL) {
+      vx = -Math.abs(vx)
+    } else if (newX < -WALL) {
+      vx = Math.abs(vx)
+    }
+    if (newY < 0) {
+      vy = Math.abs(vy)
+    }
+
+    // Update position using Circle's method
+    setXY(newX, newY)
   }
+}
+
+object BouncingBall {
+  final val g = 9.8
+  final val WALL = 10
 }
 
 /*

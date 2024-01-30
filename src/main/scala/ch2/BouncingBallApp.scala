@@ -5,24 +5,56 @@
  * <http://www.opensourcephysics.org/>
  */
 
-package ch01
 
-import org.opensourcephysics.controls.{Animation, OSPControl}
+package ch02
 
-object SHOApp {
-  /**
-   * Starts the Scala application.
-   * @param args command line parameters
-   */
-  def main(args: Array[String]): Unit = {
-    val animation: Animation = new SHOView()
-    val control: OSPControl = new OSPControl(animation)
-    control.addButton("startAnimation", "Start")
-    control.addButton("stopAnimation", "Stop")
-    control.addButton("initializeAnimation", "Initialize")
-    animation.setControl(control)
+import org.opensourcephysics.controls._
+import org.opensourcephysics.frames._
+
+class BouncingBallApp extends AbstractSimulation {
+  val frame: DisplayFrame = new DisplayFrame("x", "y", "Bouncing Balls")
+  var ball: Array[BouncingBall] = _
+  var time: Double = _
+  var dt: Double = _
+
+  override def initialize(): Unit = {
+    frame.setPreferredMinMax(-10.0, 10.0, 0, 10)
+    time = 0
+    frame.clearDrawables()
+    val n = control.getInt("number of balls")
+    val v = control.getInt("speed")
+    ball = new Array[BouncingBall](n)
+    for (i <- 0 until n) {
+      val theta = Math.PI * Math.random()
+      ball(i) = new BouncingBall(0, v * Math.cos(theta), 0, v * Math.sin(theta))
+      frame.addDrawable(ball(i))
+    }
+    frame.setMessage("t = " + decimalFormat.format(time))
+  }
+
+  override def doStep(): Unit = {
+    ball.foreach(_.step(dt))
+    time += dt
+    frame.setMessage("t=" + decimalFormat.format(time))
+  }
+
+  override def startRunning(): Unit = {
+    dt = control.getDouble("dt")
+  }
+
+  override def reset(): Unit = {
+    control.setAdjustableValue("dt", 0.1)
+    control.setValue("number of balls", 40)
+    control.setValue("speed", 10)
   }
 }
+
+object BouncingBallApp {
+  def main(args: Array[String]): Unit = {
+    SimulationControl.createApp(new BouncingBallApp())
+  }
+}
+
 
 /*
  * Open Source Physics software is free software; you can redistribute
