@@ -1,39 +1,47 @@
-/*
- * Open Source Physics software is free software as described near the bottom of this code file.
- *
- * For additional information and documentation on Open Source Physics please see:
- * <https://www.compadre.org/osp/>
- */
-
 package numerics
 
 /**
- * ODE defines a system of differential equations by providing access to the rate equations.
- *
+ * ODE defines a minimal differential equation solver.
  * @author       Wolfgang Christian
  */
-trait ODE {
+trait ODESolver {
   /**
-   * Gets the state variables.
+   * Initializes the ODE solver.
    *
-   * The getState method is invoked by an ODESolver to obtain the initial state of the system.
-   * The ODE solver advances the solution and then copies new values into the
-   * state array at the end of the solution step.
+   * ODE solvers use this method to allocate temporary arrays that may be required to carry out the solution.
+   * The number of differential equations is determined by invoking getState().length on the ODE.
    *
-   * @return state  the state
+   * @param stepSize
    */
-  def getState: Array[Double]
+  def initialize(stepSize: Double): Unit
 
   /**
-   * Gets the rate of change using the argument's state variables.
+   * Steps (advances) the differential equations by the stepSize.
    *
-   * This method may be invoked many times with different intermediate states
-   * as an ODESolver is carrying out the solution.
+   * The ODESolver invokes the ODE's getRate method to obtain the initial state of the system.
+   * The ODESolver then advances the solution and copies the new state into the
+   * state array at the end of the solution step.
    *
-   * @param state  the state array
-   * @param rate   the rate array
+   * @return the step size
    */
-  def getRate(state: Array[Double], rate: Array[Double]): Unit
+  def step(): Double
+
+  /**
+   * Sets the initial step size.
+   *
+   * The step size may change if the ODE solver implements an adaptive step size algorithm
+   * such as RK4/5.
+   *
+   * @param stepSize
+   */
+  def setStepSize(stepSize: Double): Unit
+
+  /**
+   * Gets the step size.
+   *
+   * @return the step size
+   */
+  def getStepSize(): Double
 }
 
 /*
