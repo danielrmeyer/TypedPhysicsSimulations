@@ -8,25 +8,45 @@
 
 package ch02
 
-import org.opensourcephysics.controls._
-import org.opensourcephysics.frames._
+import org.opensourcephysics.controls.*
+import org.opensourcephysics.frames.*
+
+import coulomb.*
+import coulomb.syntax.*
+import coulomb.units.constants.Radian
+// algebraic definitions
+import algebra.instances.all.given
+import coulomb.ops.algebra.all.{*, given}
+// unit and value type policies for operations
+import coulomb.policy.standard.given
+import scala.language.implicitConversions
+// unit definitions
+import coulomb.units.mks.{Meter, Second}
+
+import numerics.Math
 
 class BouncingBallApp extends AbstractSimulation {
   val frame: DisplayFrame = new DisplayFrame("x", "y", "Bouncing Balls")
   var ball: Array[BouncingBall] = _
-  var time: Double = _
-  var dt: Double = _
+  var time: Quantity[Double, Second] = _
+  var dt: Quantity[Double, Second] = _
 
   override def initialize(): Unit = {
     frame.setPreferredMinMax(-10.0, 10.0, 0, 10)
-    time = 0
+    time = 0.withUnit[Second]
     frame.clearDrawables()
     val n = control.getInt("number of balls")
-    val v = control.getInt("speed")
+    val v = control.getInt("speed").toFloat.withUnit[Meter / Second]
     ball = new Array[BouncingBall](n)
     for (i <- 0 until n) {
-      val theta = Math.PI * Math.random()
-      ball(i) = new BouncingBall(0, v * Math.cos(theta), 0, v * Math.sin(theta))
+      val theta = Math.PI * Math.random().withUnit[Radian]
+      ball(i) = new BouncingBall(
+        0.withUnit[Meter], 
+        v * Math.cos(theta), 
+        0.withUnit[Meter], 
+        v * Math.sin(theta)
+      )
+      
       frame.addDrawable(ball(i))
     }
     frame.setMessage("t = " + decimalFormat.format(time))
@@ -39,7 +59,7 @@ class BouncingBallApp extends AbstractSimulation {
   }
 
   override def startRunning(): Unit = {
-    dt = control.getDouble("dt")
+    dt = control.getDouble("dt").withUnit[Second]
   }
 
   override def reset(): Unit = {
@@ -81,5 +101,6 @@ object BouncingBallApp {
  *
  * Modifications made:
  * [Translated the code to Scala]
+ * [Added Unit Awareness]
  * Copyright (c) [2024] [Daniel Reagan Meyer]
  */

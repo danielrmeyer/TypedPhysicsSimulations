@@ -7,12 +7,25 @@
 
 package ch02
 
+import coulomb.*
+import coulomb.syntax.*
+import coulomb.units.constants.Radian
+// algebraic definitions
+import algebra.instances.all.given
+import coulomb.ops.algebra.all.{*, given}
+// unit and value type policies for operations
+import coulomb.policy.standard.given
+import scala.language.implicitConversions
+// unit definitions
+import coulomb.units.mks.{Meter, Second}
+
+
 class FallingBall {
-  var y: Double = _  // Instance variables
-  var v: Double = _
-  var t: Double = _
-  var dt: Double = _
-  val g: Double = 9.8  // Gravitational constant
+  var y: Quantity[Double, Meter] = _ // Instance variables
+  var v: Quantity[Double, Meter / Second] = _
+  var t: Quantity[Double, Second] = _
+  var dt: Quantity[Double, Second] = _
+  val g  = 9.8.withUnit[Meter / (Second ^ 2)] // Gravitational constant
 
   // Constructor
   println("A new FallingBall object is created.")
@@ -21,25 +34,29 @@ class FallingBall {
    * Steps (advances) the position of the ball using the Euler algorithm.
    */
   def step(): Unit = {
-    y += v * dt  // Euler algorithm for numerical solution
+    y += v * dt // Euler algorithm for numerical solution
     v -= g * dt
     t += dt
   }
 
   /**
    * Computes the position of the ball using the analytic solution of the equation of motion.
+   *
    * @param y0 double
    * @param v0 double
    * @return double
    */
-  def analyticPosition(y0: Double, v0: Double): Double = y0 + v0 * t - 0.5 * g * t * t
+  def analyticPosition(y0: Quantity[Double, Meter], v0: Quantity[Double, Meter / Second]): Quantity[Double, Meter] =
+    y0 + v0 * t - 0.5 * g * t * t
 
   /**
    * Computes the velocity of the ball using the analytic solution of the equation of motion.
+   *
    * @param v0 double
    * @return double
    */
-  def analyticVelocity(v0: Double): Double = v0 - g * t
+  def analyticVelocity(v0: Quantity[Double, Meter / Second]): Quantity[Double, Meter / Second] =
+    v0 - g * t
 }
 
 /*
@@ -67,5 +84,6 @@ class FallingBall {
  *
  * Modifications made:
  * [Translated the code to Scala]
+ * [Added Unit Awareness] 
  * Copyright (c) [2024] [Daniel Reagan Meyer]
  */

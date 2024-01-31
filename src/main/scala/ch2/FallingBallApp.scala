@@ -7,28 +7,40 @@
 
 package ch02
 
+import coulomb.*
+import coulomb.syntax.*
+import coulomb.units.constants.Radian
+// algebraic definitions
+import algebra.instances.all.given
+import coulomb.ops.algebra.all.{*, given}
+// unit and value type policies for operations
+import coulomb.policy.standard.given
+import scala.language.implicitConversions
+// unit definitions
+import coulomb.units.mks.{Meter, Second}
+
 object FallingBallApp {
 
   def main(args: Array[String]): Unit = {
     val ball = new FallingBall() // Declaration and instantiation
-    val y0 = 10.0                // Example of declaration and assignment statement
-    val v0 = 0.0
-    ball.t = 0.0 // Note use of dot operator to access instance variable
-    ball.dt = 0.01
+    val y0 = 10.0.withUnit[Meter]             // Example of declaration and assignment statement
+    val v0 = 0.0.withUnit[Meter / Second]
+    ball.t = 0.0.withUnit[Second] // Note use of dot operator to access instance variable
+    ball.dt = 0.01.withUnit[Second]
     ball.y = y0
     ball.v = v0
-    while (ball.y > 0) {
+    while (ball.y > 0.withUnit[Meter]) {
       ball.step()
     }
 
     println("Results")
-    println(s"final time = ${ball.t}")
+    println(s"final time = ${ball.t.show}")
     // Displays numerical results
-    println(s"y = ${ball.y} v = ${ball.v}")
+    println(s"y = ${ball.y.show} v = ${ball.v.show}")
     // Displays analytic results
-    println(s"analytic y = ${ball.analyticPosition(y0, v0)}")
-    println(s"analytic v = ${ball.analyticVelocity(v0)}")
-    println(s"acceleration = ${ball.g}")
+    println(s"analytic y = ${ball.analyticPosition(y0, v0).show}")
+    println(s"analytic v = ${ball.analyticVelocity(v0).show}")
+    println(s"acceleration = ${ball.g.show}")
   }
 }
 
@@ -57,5 +69,6 @@ object FallingBallApp {
  *
  * Modifications made:
  * [Translated the code to Scala]
+ * [Added Unit Awareness]
  * Copyright (c) [2024] [Daniel Reagan Meyer]
  */

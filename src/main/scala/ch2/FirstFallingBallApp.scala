@@ -3,35 +3,51 @@
  *
  * For additional information and documentation on Open Source Physics please see:
  * <http://www.opensourcephysics.org/>
+ * Modifications made:
+ * [Translated the code to Scala]
+ * [Added Unit Awareness]
+ * Copyright (c) [2024] [Daniel Reagan Meyer]
  */
 
 package ch02
 
+import coulomb.*
+import coulomb.syntax.*
+// algebraic definitions
+import algebra.instances.all.given
+import coulomb.ops.algebra.all.{*, given}
+// unit and value type policies for operations
+import coulomb.policy.standard.given
+import scala.language.implicitConversions
+// unit definitions
+import coulomb.units.mks.{Meter, Second}
+
+
 object FirstFallingBallApp {
 
   def main(args: Array[String]): Unit = {
-    val y0 = 10.0   // Initial position
-    val v0 = 0.0    // Initial velocity
-    var t = 0.0     // Time
-    val dt = 0.01   // Time step
+    val y0 = 10.0.withUnit[Meter]   // Initial position
+    val v0 = 0.0.withUnit[Meter / Second]    // Initial velocity
+    var t = 0.0.withUnit[Second]     // Time
+    val dt = 0.01.withUnit[Second]   // Time step
     var y = y0
     var v = v0
-    val g = 9.8     // Gravitational field
+    val g = 9.8.withUnit[Meter / (Second ^ 2)]     // Gravitational field
 
     for (n <- 0 until 100) {
-      y += v * dt
-      v -= g * dt
-      t += dt
+      y = y +  v*dt
+      v = v - g*dt
+      t = t + dt
     }
 
     println("Results")
-    println(s"final time = $t")
+    println(s"final time = ${t.show}")
     // Display numerical result
-    println(s"y = $y v = $v")
+    println(s"y = ${y.show} v = ${v.show}")
     // Display analytic result
     val yAnalytic = y0 + v0 * t - 0.5 * g * t * t
     val vAnalytic = v0 - g * t
-    println(s"analytic y = $yAnalytic v = $vAnalytic")
+    println(s"analytic y = ${yAnalytic.show} v = ${vAnalytic.show}")
   }
 }
 
@@ -60,5 +76,6 @@ object FirstFallingBallApp {
  *
  * Modifications made:
  * [Translated the code to Scala]
+ * [Added Unit Awareness]
  * Copyright (c) [2024] [Daniel Reagan Meyer]
  */

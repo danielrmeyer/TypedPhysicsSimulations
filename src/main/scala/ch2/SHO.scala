@@ -70,5 +70,6 @@ class SHO {
  *
  * Modifications made:
  * [Translated the code to Scala]
+ * [Added Unit Awareness]
  * Copyright (c) [2024] [Daniel Reagan Meyer]
  */

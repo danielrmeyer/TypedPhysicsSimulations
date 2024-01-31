@@ -7,6 +7,20 @@
 
 package ch02
 
+import coulomb.*
+import coulomb.syntax.*
+import coulomb.units.constants.Radian
+import org.opensourcephysics.controls.*
+import org.opensourcephysics.frames.*
+// algebraic definitions
+import algebra.instances.all.given
+import coulomb.ops.algebra.all.{*, given}
+// unit and value type policies for operations
+import coulomb.policy.standard.given
+
+import scala.language.implicitConversions
+// unit definitions
+import coulomb.units.mks.{Meter, Second}
 import org.opensourcephysics.display.Circle
 
 /**
@@ -15,35 +29,40 @@ import org.opensourcephysics.display.Circle
 
 import org.opensourcephysics.display.Circle
 
-class BouncingBall(initialX: Double, var vx: Double, initialY: Double, var vy: Double) extends Circle {
+class BouncingBall(
+                    initialX: Quantity[Double, Meter],
+                    var vx: Quantity[Double, Meter / Second],
+                    initialY: Quantity[Double, Meter],
+                    var vy: Quantity[Double, Meter / Second]
+                  ) extends Circle {
 
-  import BouncingBall._
+  import BouncingBall.*
 
   // Initialize position using Circle's method
-  setXY(initialX, initialY)
+  setXY(initialX.value, initialY.value)
 
-  def step(dt: Double): Unit = {
-    val newX = getX + vx * dt
-    val newY = getY + vy * dt
+  def step(dt: Quantity[Double, Second]): Unit = {
+    val newX = getX.withUnit[Meter] + vx * dt
+    val newY = getY.withUnit[Meter] + vy * dt
     vy -= g * dt
 
     if (newX > WALL) {
-      vx = -Math.abs(vx)
+      vx = -Math.abs(vx.value).withUnit[Meter / Second]
     } else if (newX < -WALL) {
-      vx = Math.abs(vx)
+      vx = Math.abs(vx.value).withUnit[Meter / Second]
     }
-    if (newY < 0) {
-      vy = Math.abs(vy)
+    if (newY < 0.withUnit[Meter]) {
+      vy = Math.abs(vy.value).withUnit[Meter / Second]
     }
 
     // Update position using Circle's method
-    setXY(newX, newY)
+    setXY(newX.value, newY.value)
   }
 }
 
 object BouncingBall {
-  final val g = 9.8
-  final val WALL = 10
+  final val g = 9.8.withUnit[Meter / (Second ^ 2)]
+  final val WALL = 10.withUnit[Meter]
 }
 
 /*
@@ -71,5 +90,6 @@ object BouncingBall {
  *
  * Modifications made:
  * [Translated the code to Scala]
+ * [Added Unit Awareness]
  * Copyright (c) [2024] [Daniel Reagan Meyer]
  */

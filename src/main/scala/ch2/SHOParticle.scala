@@ -6,15 +6,29 @@
  */
 package ch02
 
-class SHOParticle(initialY: Double, initialV: Double) extends Particle {
+import coulomb.*
+import coulomb.syntax.*
+import coulomb.units.constants.Radian
+// algebraic definitions
+import algebra.instances.all.given
+import coulomb.ops.algebra.all.{*, given}
+// unit and value type policies for operations
+import coulomb.policy.standard.given
+import scala.language.implicitConversions
+// unit definitions
+import coulomb.units.mks.{*, given}
+
+import numerics.Math
+
+class SHOParticle(initialY: Quantity[Double, Meter], initialV: Quantity[Double, Meter / Second]) extends Particle {
   import SHOParticle._
 
   println("A new SHO object is being created.")
   y = initialY
   v = initialV
 
-  private var y0: Double = y
-  private var v0: Double = v
+  private var y0 = y
+  private var v0 = v
 
   /**
    * Steps (advances) the dynamical variables using the Euler-Cromer algorithm.
@@ -30,20 +44,22 @@ class SHOParticle(initialY: Double, initialV: Double) extends Particle {
    *
    * @return double
    */
-  def analyticPosition(): Double = y0 * Math.cos(omega0 * t) + v0 / omega0 * Math.sin(omega0 * t)
+  def analyticPosition(): Quantity[Double, Meter] =
+    y0 * Math.cos(omega0 * t) + v0 / omega0 * Math.sin(omega0 * t)
 
   /**
    * Computes the velocity at the current time using the analytic solution.
    *
    * @return double
    */
-  def analyticVelocity(): Double = -y0 * omega0 * Math.sin(omega0 * t) + v0 * Math.cos(omega0 * t)
+  def analyticVelocity(): Quantity[Double, Meter / Second] =
+    -y0 * omega0 * Math.sin(omega0 * t) + v0 * Math.cos(omega0 * t)
 }
 
 object SHOParticle {
-  final val k: Double = 1.0               // Spring constant
-  final val m: Double = 1.0
-  final val omega0: Double = Math.sqrt(k) // Assume unit mass
+  final val k = 1.0.withUnit[Newton / Meter]               // Spring constant
+  final val m = 1.0.withUnit[Kilogram] // Assume unit mass
+  final val omega0 = java.lang.Math.sqrt(k.value).withUnit[Radian / Second]  // TODO not really being explicit about how we go from sqrt(N / M) to Rad / s
 }
 
 /*
@@ -71,5 +87,6 @@ object SHOParticle {
  *
  * Modifications made:
  * [Translated the code to Scala]
+ * [Added Unit Awareness]
  * Copyright (c) [2024] [Daniel Reagan Meyer]
  */

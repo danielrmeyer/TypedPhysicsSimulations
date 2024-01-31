@@ -7,6 +7,18 @@
 
 package ch02
 
+import coulomb.*
+import coulomb.syntax.*
+import coulomb.units.constants.Radian
+// algebraic definitions
+import algebra.instances.all.given
+import coulomb.ops.algebra.all.{*, given}
+// unit and value type policies for operations
+import coulomb.policy.standard.given
+import scala.language.implicitConversions
+// unit definitions
+import coulomb.units.mks.{Meter, Second}
+
 import org.opensourcephysics.controls._
 import org.opensourcephysics.frames._
 
@@ -17,18 +29,18 @@ class FallingParticlePlotApp extends AbstractCalculation {
     plotFrame.setAutoclear(false) // Data not cleared at beginning of each calculation
 
     // Gets initial conditions
-    val y0 = control.getDouble("Initial y")
-    val v0 = control.getDouble("Initial v")
+    val y0 = control.getDouble("Initial y").withUnit[Meter]
+    val v0 = control.getDouble("Initial v").withUnit[Meter / Second]
 
     // Sets initial conditions
     val ball = new FallingParticle(y0, v0)
 
     // Gets parameters
-    ball.dt = control.getDouble("dt")
-    while (ball.y > 0) {
+    ball.dt = control.getDouble("dt").withUnit[Second]
+    while (ball.y > 0.withUnit[Meter]) {
       ball.step()
-      plotFrame.append(0, ball.t, ball.y)
-      plotFrame.append(1, ball.t, ball.analyticPosition())
+      plotFrame.append(0, ball.t.value, ball.y.value)
+      plotFrame.append(1, ball.t.value, ball.analyticPosition().value)
     }
   }
 
@@ -70,5 +82,6 @@ object FallingParticlePlotApp {
  *
  * Modifications made:
  * [Translated the code to Scala]
+ * [Added Unit Awareness]
  * Copyright (c) [2024] [Daniel Reagan Meyer]
  */

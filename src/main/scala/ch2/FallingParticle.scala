@@ -1,14 +1,26 @@
 package ch02
 
-class FallingParticle(initialY: Double,  initialV: Double) extends Particle {
+import coulomb.*
+import coulomb.syntax.*
+import coulomb.units.constants.Radian
+// algebraic definitions
+import algebra.instances.all.given
+import coulomb.ops.algebra.all.{*, given}
+// unit and value type policies for operations
+import coulomb.policy.standard.given
+import scala.language.implicitConversions
+// unit definitions
+import coulomb.units.mks.{Meter, Second}
+
+class FallingParticle(initialY: Quantity[Double, Meter],  initialV: Quantity[Double, Meter / Second]) extends Particle {
   import FallingParticle._
 
   println("A new FallingParticle object is created.")
   y = initialY
   v = initialV
 
-  private var y0: Double = y
-  private var v0: Double = v
+  private var y0 = y
+  private var v0 = v
 
   def step(): Unit = {
     y += v * dt
@@ -16,13 +28,13 @@ class FallingParticle(initialY: Double,  initialV: Double) extends Particle {
     t += dt
   }
 
-  def analyticPosition(): Double = y0 + v0 * t - (g * t * t) / 2.0
+  def analyticPosition(): Quantity[Double, Meter] = y0 + v0 * t - (g * t * t) / 2.0
 
-  def analyticVelocity(): Double = v0 - g * t
+  def analyticVelocity(): Quantity[Double, Meter / Second] = v0 - g * t
 }
 
 object FallingParticle {
-  final val g = 9.8
+  final val g = 9.8.withUnit[Meter / (Second ^ 2)]
 }
 
 /*
@@ -50,5 +62,6 @@ object FallingParticle {
  *
  * Modifications made:
  * [Translated the code to Scala]
+ * [Added Unit Awareness]
  * Copyright (c) [2024] [Daniel Reagan Meyer]
  */

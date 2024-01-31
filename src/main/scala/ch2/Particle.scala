@@ -7,19 +7,31 @@
 
 package ch02
 
+import coulomb.*
+import coulomb.syntax.*
+import coulomb.units.constants.Radian
+// algebraic definitions
+import algebra.instances.all.given
+import coulomb.ops.algebra.all.{*, given}
+// unit and value type policies for operations
+import coulomb.policy.standard.given
+import scala.language.implicitConversions
+// unit definitions
+import coulomb.units.mks.{Meter, Second}
+
 abstract class Particle {
-  var y: Double = _ // Instance variables
-  var v: Double = _
-  var t: Double = _
-  var dt: Double = _
+  var y: Quantity[Double, Meter] = _ // Instance variables
+  var v: Quantity[Double, Meter / Second] = _
+  var t: Quantity[Double, Second] = _
+  var dt: Quantity[Double, Second] = _
 
   // Constructor
   println("A new Particle is created.")
 
   // Abstract methods
   def step(): Unit
-  def analyticPosition(): Double
-  def analyticVelocity(): Double
+  def analyticPosition(): Quantity[Double, Meter]
+  def analyticVelocity(): Quantity[Double, Meter / Second]
 }
 
 /*
@@ -47,5 +59,6 @@ abstract class Particle {
  *
  * Modifications made:
  * [Translated the code to Scala]
+ * [Added Unit Awareness]
  * Copyright (c) [2024] [Daniel Reagan Meyer]
  */

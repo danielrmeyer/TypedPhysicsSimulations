@@ -7,21 +7,33 @@
 
 package ch02
 
+import coulomb.*
+import coulomb.syntax.*
+import coulomb.units.constants.Radian
+// algebraic definitions
+import algebra.instances.all.given
+import coulomb.ops.algebra.all.{*, given}
+// unit and value type policies for operations
+import coulomb.policy.standard.given
+import scala.language.implicitConversions
+// unit definitions
+import coulomb.units.mks.{Meter, Second}
+
 object FallingParticleApp {
 
   def main(args: Array[String]): Unit = {
-    val ball = new FallingParticle(10, 0) // Particle starting 10 meters up, initial velocity 0
-    ball.t = 0
-    ball.dt = 0.01
+    val ball = new FallingParticle(10.withUnit[Meter], 0.withUnit[Meter / Second]) // Particle starting 10 meters up, initial velocity 0
+    ball.t = 0.withUnit[Second]
+    ball.dt = 0.01.withUnit[Second]
 
-    while (ball.y > 0) {
+    while (ball.y > 0.withUnit[Meter]) {
       ball.step()
     }
 
     println("Results")
-    println(s"final time = ${ball.t}")
-    println(s"y = ${ball.y} v = ${ball.v}") // Numerical result
-    println(s"y analytic = ${ball.analyticPosition()}") // Analytic result
+    println(s"final time = ${ball.t.show}")
+    println(s"y = ${ball.y} v = ${ball.v.show}") // Numerical result
+    println(s"y analytic = ${ball.analyticPosition().show}") // Analytic result
   }
 }
 
@@ -50,5 +62,6 @@ object FallingParticleApp {
  *
  * Modifications made:
  * [Translated the code to Scala]
+ * [Added Unit Awareness]
  * Copyright (c) [2024] [Daniel Reagan Meyer]
  */

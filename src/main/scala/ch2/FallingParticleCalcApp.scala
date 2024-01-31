@@ -7,29 +7,41 @@
 
 package ch02
 
+import coulomb.*
+import coulomb.syntax.*
+import coulomb.units.constants.Radian
+// algebraic definitions
+import algebra.instances.all.given
+import coulomb.ops.algebra.all.{*, given}
+// unit and value type policies for operations
+import coulomb.policy.standard.given
+import scala.language.implicitConversions
+// unit definitions
+import coulomb.units.mks.{Meter, Second}
+
 import org.opensourcephysics.controls._
 
 class FallingParticleCalcApp extends AbstractCalculation {
 
   def calculate(): Unit = {
     // Gets initial conditions
-    val y0 = control.getDouble("Initial y")
-    val v0 = control.getDouble("Initial v")
+    val y0 = control.getDouble("Initial y").withUnit[Meter]
+    val v0 = control.getDouble("Initial v").withUnit[Meter / Second]
 
     // Sets initial conditions
     val ball = new FallingParticle(y0, v0)
 
     // Reads parameters and sets dt
-    ball.dt = control.getDouble("dt")
-    while (ball.y > 0) {
+    ball.dt = control.getDouble("dt").withUnit[Second]
+    while (ball.y > 0.0.withUnit[Meter]) {
       ball.step()
     }
 
     // Displays numerical results
-    control.println(s"final time = ${ball.t}")
-    control.println(s"y = ${ball.y} v = ${ball.v}")
-    control.println(s"analytic y = ${ball.analyticPosition()}")
-    control.println(s"analytic v = ${ball.analyticVelocity()}")
+    control.println(s"final time = ${ball.t.show}")
+    control.println(s"y = ${ball.y} v = ${ball.v.show}")
+    control.println(s"analytic y = ${ball.analyticPosition().show}")
+    control.println(s"analytic v = ${ball.analyticVelocity().show}")
   }
 
   override def reset(): Unit = {
@@ -70,5 +82,6 @@ object FallingParticleCalcApp {
  *
  * Modifications made:
  * [Translated the code to Scala]
+ * [Added Unit Awareness]
  * Copyright (c) [2024] [Daniel Reagan Meyer]
  */
