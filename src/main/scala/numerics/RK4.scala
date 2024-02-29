@@ -13,19 +13,37 @@ package numerics
  * @author       Wolfgang Christian
  * @version 1.0
  */
+
+import algebra.instances.all.given
+import coulomb.ops.algebra.all.{*, given}
+// unit and value type policies for operations
+import coulomb.policy.standard.given
+import coulomb.*
+import coulomb.syntax.*
+import coulomb.units.constants.{Kilogram, Radian}
+import coulomb.units.mks.Newton
+
+import scala.collection.mutable.ListBuffer
+import scala.language.implicitConversions
+
+// unit definitions
+import coulomb.units.mks.{Meter, Second}
+
+
 class RK4(override val ode: ODE) extends AbstractODESolver(ode) {
-  private var rate1 = Array.ofDim[Double](numEqn)
-  private var rate2 = Array.ofDim[Double](numEqn)
-  private var rate3 = Array.ofDim[Double](numEqn)
-  private var rate4 = Array.ofDim[Double](numEqn)
-  private var estimated_state = Array.ofDim[Double](numEqn)
+  //(Array(0.0.withUnit[Meter / Second]), Array(0.0.withUnit[Meter / Second]), 0.0.withUnit[Second]
+  private var rate1:Rate = _
+  private var rate2:Rate = _
+  private var rate3:Rate = _
+  private var rate4:Rate = _
+  private var estimated_state:State = _
 
   /**
    * Constructs the RK4 ODESolver for a system of ordinary  differential equations.
    *
    * @param ode the system of differential equations.
    */
-  def this() = this(null)
+  def this() = this(null) // TODO get rid of this null
 
   /**
    * Initializes the ODE solver and allocates the rate and state arrays.
@@ -33,14 +51,13 @@ class RK4(override val ode: ODE) extends AbstractODESolver(ode) {
    *
    * @param stepSize
    */
-  override def initialize(stepSize: Double): Unit = {
+  override def initialize(stepSize: Quantity[Double, Second]): Unit =
     super.initialize(stepSize)
-    rate1 = Array.ofDim[Double](numEqn)
-    rate2 = Array.ofDim[Double](numEqn)
-    rate3 = Array.ofDim[Double](numEqn)
-    rate4 = Array.ofDim[Double](numEqn)
-    estimated_state = Array.ofDim[Double](numEqn)
-  }
+    rate1 = new Rate(numEqn)
+    rate2 = new Rate(numEqn)
+    rate3 = new Rate(numEqn)
+    rate4 = new Rate(numEqn)
+    estimated_state = new State(numEqn)
 
   /**
    * Steps (advances) the differential equations by the stepSize.
@@ -52,32 +69,27 @@ class RK4(override val ode: ODE) extends AbstractODESolver(ode) {
    *
    * @return the step size
    */
-  override def step(): Double = {
+  override def step(): Quantity[Double, Second] =
     val state = ode.getState
-    if (state == null) {
-      return stepSize
-    }
-    if (state.length!= numEqn) {
+    println(state.x(0))
+    if (state == null)
+      stepSize
+    if (state.x.length!= numEqn)
       initialize(stepSize)
-    }
     ode.getRate(state, rate1)
-    for (i <- 0 until numEqn) {
-      estimated_state(i) = state(i) + stepSize * rate1(i) / 2
-    }
+    for (i <- 0 until numEqn)
+      estimated_state.x(i) = state.x(i) + stepSize * rate1.v(i) / 2
     ode.getRate(estimated_state, rate2)
-    for (i <- 0 until numEqn) {
-      estimated_state(i) = state(i) + stepSize * rate2(i) / 2
-    }
+    for (i <- 0 until numEqn)
+      estimated_state.x(i) = state.x(i) + stepSize * rate2.v(i) / 2
     ode.getRate(estimated_state, rate3)
-    for (i <- 0 until numEqn) {
-      estimated_state(i) = state(i) + stepSize * rate3(i)
-    }
+    for (i <- 0 until numEqn)
+      estimated_state.x(i) = state.x(i) + stepSize * rate3.v(i)
     ode.getRate(estimated_state, rate4)
-    for (i <- 0 until numEqn) {
-      state(i) = state(i) + stepSize * (rate1(i) + 2 * rate2(i) + 2 * rate3(i) + rate4(i)) / 6.0
-    }
-    return stepSize
-  }
+    for (i <- 0 until numEqn)
+      state.x(i) = state.x(i) + stepSize * (rate1.v(i) + 2 * rate2.v(i) + 2 * rate3.v(i) + rate4.v(i)) / 6.0
+    stepSize
+
 }
 
 /*

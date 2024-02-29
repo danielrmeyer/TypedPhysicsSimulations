@@ -1,5 +1,15 @@
 package numerics
 
+import algebra.instances.all.given
+import coulomb.ops.algebra.all.{*, given}
+// unit and value type policies for operations
+import coulomb.policy.standard.given
+import coulomb.*
+import coulomb.syntax.*
+import coulomb.units.constants.{Kilogram, Radian}
+import coulomb.units.mks.Newton
+import coulomb.ops.algebra.all.{*, given}
+import coulomb.units.mks.{Meter, Second}
 /**
  * ODE defines a minimal differential equation solver.
  * @author       Wolfgang Christian
@@ -13,7 +23,7 @@ trait ODESolver {
    *
    * @param stepSize
    */
-  def initialize(stepSize: Double): Unit
+  def initialize(stepSize: Quantity[Double, Second]): Unit
 
   /**
    * Steps (advances) the differential equations by the stepSize.
@@ -24,7 +34,7 @@ trait ODESolver {
    *
    * @return the step size
    */
-  def step(): Double
+  def step(): Quantity[Double, Second]
 
   /**
    * Sets the initial step size.
@@ -34,14 +44,14 @@ trait ODESolver {
    *
    * @param stepSize
    */
-  def setStepSize(stepSize: Double): Unit
+  def setStepSize(stepSize: Quantity[Double, Second]): Unit
 
   /**
    * Gets the step size.
    *
    * @return the step size
    */
-  def getStepSize(): Double
+  def getStepSize(): Quantity[Double, Second]
 }
 
 /*

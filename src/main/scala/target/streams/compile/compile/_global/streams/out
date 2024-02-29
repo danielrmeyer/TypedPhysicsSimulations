@@ -1,0 +1,61 @@
+[0m[[0m[31merror[0m] [0m[0m/home/daniel/Sources/TypedPhysicsSimulations/src/main/scala/FirstFallingBallApp.scala:17:1: expected start of definition[0m
+[0m[[0m[31merror[0m] [0m[0mdef firstFallingBallApp() =[0m
+[0m[[0m[31merror[0m] [0m[0m^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/daniel/Sources/TypedPhysicsSimulations/src/main/scala/FirstFallingBallApp.scala:19:3: expected class or object definition[0m
+[0m[[0m[31merror[0m] [0m[0m  val v0 = 0.0.withUnit[Meter / Second][0m
+[0m[[0m[31merror[0m] [0m[0m  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/daniel/Sources/TypedPhysicsSimulations/src/main/scala/FirstFallingBallApp.scala:21:3: expected class or object definition[0m
+[0m[[0m[31merror[0m] [0m[0m  val dt = 0.01.withUnit[Second][0m
+[0m[[0m[31merror[0m] [0m[0m  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/daniel/Sources/TypedPhysicsSimulations/src/main/scala/FirstFallingBallApp.scala:22:3: expected class or object definition[0m
+[0m[[0m[31merror[0m] [0m[0m  val g = 9.8.withUnit[Meter / (Second ^ 2)][0m
+[0m[[0m[31merror[0m] [0m[0m  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/daniel/Sources/TypedPhysicsSimulations/src/main/scala/FirstFallingBallApp.scala:24:3: expected class or object definition[0m
+[0m[[0m[31merror[0m] [0m[0m  var y = y0[0m
+[0m[[0m[31merror[0m] [0m[0m  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/daniel/Sources/TypedPhysicsSimulations/src/main/scala/FirstFallingBallApp.scala:25:3: expected class or object definition[0m
+[0m[[0m[31merror[0m] [0m[0m  var v = v0[0m
+[0m[[0m[31merror[0m] [0m[0m  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/daniel/Sources/TypedPhysicsSimulations/src/main/scala/FirstFallingBallApp.scala:26:3: expected class or object definition[0m
+[0m[[0m[31merror[0m] [0m[0m  var t = 0.0.withUnit[Second][0m
+[0m[[0m[31merror[0m] [0m[0m  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/daniel/Sources/TypedPhysicsSimulations/src/main/scala/FirstFallingBallApp.scala:28:3: expected class or object definition[0m
+[0m[[0m[31merror[0m] [0m[0m  for(n <- 0 to 100)[0m
+[0m[[0m[31merror[0m] [0m[0m  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/daniel/Sources/TypedPhysicsSimulations/src/main/scala/FirstFallingBallApp.scala:29:5: expected class or object definition[0m
+[0m[[0m[31merror[0m] [0m[0m    y = y + v*dt[0m
+[0m[[0m[31merror[0m] [0m[0m    ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/daniel/Sources/TypedPhysicsSimulations/src/main/scala/FirstFallingBallApp.scala:30:5: expected class or object definition[0m
+[0m[[0m[31merror[0m] [0m[0m    v = v - dt*g[0m
+[0m[[0m[31merror[0m] [0m[0m    ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/daniel/Sources/TypedPhysicsSimulations/src/main/scala/FirstFallingBallApp.scala:31:5: expected class or object definition[0m
+[0m[[0m[31merror[0m] [0m[0m    t = t + dt[0m
+[0m[[0m[31merror[0m] [0m[0m    ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/daniel/Sources/TypedPhysicsSimulations/src/main/scala/FirstFallingBallApp.scala:33:3: expected class or object definition[0m
+[0m[[0m[31merror[0m] [0m[0m  println("Results")[0m
+[0m[[0m[31merror[0m] [0m[0m  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/daniel/Sources/TypedPhysicsSimulations/src/main/scala/FirstFallingBallApp.scala:34:3: expected class or object definition[0m
+[0m[[0m[31merror[0m] [0m[0m  println("final time = " + t.show)[0m
+[0m[[0m[31merror[0m] [0m[0m  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/daniel/Sources/TypedPhysicsSimulations/src/main/scala/FirstFallingBallApp.scala:35:3: expected class or object definition[0m
+[0m[[0m[31merror[0m] [0m[0m  println("y = "+y.show+" v = " + v.show)[0m
+[0m[[0m[31merror[0m] [0m[0m  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/daniel/Sources/TypedPhysicsSimulations/src/main/scala/FirstFallingBallApp.scala:37:3: expected class or object definition[0m
+[0m[[0m[31merror[0m] [0m[0m  val yAnalytic = y0 + v0 * t - 0.5 * g * t * t[0m
+[0m[[0m[31merror[0m] [0m[0m  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/daniel/Sources/TypedPhysicsSimulations/src/main/scala/FirstFallingBallApp.scala:38:3: expected class or object definition[0m
+[0m[[0m[31merror[0m] [0m[0m  val vAnalytic = v0 - g * t[0m
+[0m[[0m[31merror[0m] [0m[0m  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/daniel/Sources/TypedPhysicsSimulations/src/main/scala/FirstFallingBallApp.scala:39:3: expected class or object definition[0m
+[0m[[0m[31merror[0m] [0m[0m  System.out.println("analytic y = " + yAnalytic.show + " v = " + vAnalytic.show)[0m
+[0m[[0m[31merror[0m] [0m[0m  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/daniel/Sources/TypedPhysicsSimulations/src/main/scala/SHOApp.scala:29:5: illegal start of simple expression[0m
+[0m[[0m[31merror[0m] [0m[0m    val x = state.x[0m
+[0m[[0m[31merror[0m] [0m[0m    ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/daniel/Sources/TypedPhysicsSimulations/src/main/scala/SHOApp.scala:101:1: expected start of definition[0m
+[0m[[0m[31merror[0m] [0m[0mdef shoApp(): Unit = {[0m
+[0m[[0m[31merror[0m] [0m[0m^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/daniel/Sources/TypedPhysicsSimulations/src/main/scala/SinApp.scala:7:1: expected start of definition[0m
+[0m[[0m[31merror[0m] [0m[0mdef sin(): Unit = {[0m
+[0m[[0m[31merror[0m] [0m[0m^[0m
+[0m[[0m[31merror[0m] [0m[0m20 errors found[0m

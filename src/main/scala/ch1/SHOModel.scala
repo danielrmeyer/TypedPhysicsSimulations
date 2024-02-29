@@ -7,14 +7,38 @@
 
 package ch01
 
-import org.opensourcephysics.display.Circle
+import coulomb.*
+import coulomb.syntax.*
+import coulomb.units.constants.{Kilogram, Radian}
+import coulomb.units.mks.Newton
 import numerics.{ODE, ODESolver, RK4}
+import org.opensourcephysics.controls.*
+import org.opensourcephysics.display.Circle
+import org.opensourcephysics.frames.*
+// algebraic definitions
+import algebra.instances.all.given
+import coulomb.ops.algebra.all.{*, given}
+// unit and value type policies for operations
+import coulomb.policy.standard.given
+
+import scala.collection.mutable.ListBuffer
+import scala.language.implicitConversions
+
+// unit definitions
+import coulomb.units.mks.{Meter, Second}
+
+import numerics.{State, Rate}
 
 class SHOModel extends Circle with ODE {
   // initial state values = {x, v, t}
-  private val state: Array[Double] = Array(0.0, 0.0, 0.0)
-  private val k: Double = 1       // spring constant
-  private val b: Double = 0.2     // damping constant
+
+  var state = new State(1)
+  state.x = Array(0.0.withUnit[Meter])
+  state.v = Array(0.0.withUnit[Meter / Second])
+  state.t = 0.0.withUnit[Second]
+
+  private val k = 1.0.withUnit[Newton / Meter] // spring constant
+  private val b = 0.2.withUnit[(Newton * Second) / Meter] // damping constant
   private val odeSolver: ODESolver = new RK4(this)
 
   /**
@@ -24,26 +48,29 @@ class SHOModel extends Circle with ODE {
    * @param v velocity
    * @param t time
    */
-  def initialize(x: Double, v: Double, t: Double): Unit = {
-    this.x = x
-    state(0) = x
-    state(1) = v
-    state(2) = t
-  }
+  def initialize(
+                  x: Quantity[Double, Meter],
+                  v: Quantity[Double, Meter / Second],
+                  t: Quantity[Double, Second]): Unit =
+    this.x = x.value // Set the Circle x value
+
+    state.x = Array(x)
+    state.v = Array(v)
+    state.t = t
 
   /**
    * Gets the time.
    *
    * @return time
    */
-  def getTime: Double = state(2)
+  def getTime: Quantity[Double, Second] = state.t
 
   /**
    * Gets the state array.
    *
    * @return an array containing {x, v, t}
    */
-  override def getState: Array[Double] = state
+  override def getState: State = state
 
   /**
    * Calculates the rate array using the given state.
@@ -52,11 +79,11 @@ class SHOModel extends Circle with ODE {
    * @param state the state
    * @param rate  the rate
    */
-  override def getRate(state: Array[Double], rate: Array[Double]): Unit = {
-    val force: Double = -k * state(0) - b * state(1)
-    rate(0) = state(1) // dx/dt = v
-    rate(1) = force    // dv/dt = force
-    rate(2) = 1        // dt/dt = 1
+  override def getRate(state: State, rate: Rate): Unit = {
+    val force = -k * state.x(0) - b * state.v(0)
+    rate.v(0) = state.v(0) // dx/dt = v
+    rate.a(0) = force / 1.0.withUnit[Kilogram] // dv/dt = force,  assuming unit mass
+    rate.t = 1.0.withUnit[Second] // dt/dt = 1
   }
 
   /**
@@ -64,7 +91,7 @@ class SHOModel extends Circle with ODE {
    */
   def move(): Unit = {
     odeSolver.step()
-    setX(state(0))
+    setX(state.x(0).value)
   }
 }
 

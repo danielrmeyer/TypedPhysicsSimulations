@@ -27,52 +27,49 @@ import numerics.Math
 
 class BouncingBallApp extends AbstractSimulation {
   val frame: DisplayFrame = new DisplayFrame("x", "y", "Bouncing Balls")
-  var ball: Array[BouncingBall] = _
+  var balls: Array[BouncingBall] = _
   var time: Quantity[Double, Second] = _
   var dt: Quantity[Double, Second] = _
 
-  override def initialize(): Unit = {
+  override def initialize(): Unit =
     frame.setPreferredMinMax(-10.0, 10.0, 0, 10)
     time = 0.withUnit[Second]
     frame.clearDrawables()
     val n = control.getInt("number of balls")
     val v = control.getInt("speed").toFloat.withUnit[Meter / Second]
-    ball = new Array[BouncingBall](n)
-    for (i <- 0 until n) {
-      val theta = Math.PI * Math.random().withUnit[Radian]
-      ball(i) = new BouncingBall(
+    balls = new Array[BouncingBall](n)
+    for (i <- 0 until n)
+      val theta = Math.PI * scala.math.random()
+      balls(i) = new BouncingBall(
         0.withUnit[Meter], 
-        v * Math.cos(theta), 
+        v * Math.cos(theta),
         0.withUnit[Meter], 
         v * Math.sin(theta)
       )
       
-      frame.addDrawable(ball(i))
-    }
-    frame.setMessage("t = " + decimalFormat.format(time))
-  }
+      frame.addDrawable(balls(i))
 
-  override def doStep(): Unit = {
-    ball.foreach(_.step(dt))
+
+    frame.setMessage("t = " + decimalFormat.format(time))
+
+
+  override def doStep(): Unit =
+    balls.foreach(_.step(dt))
     time += dt
     frame.setMessage("t=" + decimalFormat.format(time))
-  }
 
-  override def startRunning(): Unit = {
+  override def startRunning(): Unit =
     dt = control.getDouble("dt").withUnit[Second]
-  }
 
-  override def reset(): Unit = {
+  override def reset(): Unit =
     control.setAdjustableValue("dt", 0.1)
     control.setValue("number of balls", 40)
     control.setValue("speed", 10)
-  }
 }
 
 object BouncingBallApp {
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit =
     SimulationControl.createApp(new BouncingBallApp())
-  }
 }
 
 

@@ -21,5 +21,11 @@ object Math {
   def sin(theta: Quantity[Double, Radian]): Quantity[Double, Radian] =
     java.lang.Math.sin(theta.value).withUnit[Radian]
 
-  def sqrt(x: Double): Double = java.lang.Math.sqrt(x)  // TODO what does the square root do to units?
+  //def sqrt(x: Quantity[Double, Pow[V, U, P]]): Double = java.lang.Math.sqrt(x.value)  // TODO what does the square root do to units?
+
+  def sqrt[V](q: Quantity[Double, V ^ 2])(using ops: ValueOf[V]): Quantity[Double, V] = {
+    scala.math.sqrt(q.value).withUnit[V]
+  }
+  
+  val PI = java.lang.Math.PI.withUnit[Radian]
 }

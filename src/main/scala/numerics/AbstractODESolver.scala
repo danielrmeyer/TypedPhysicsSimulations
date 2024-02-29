@@ -7,6 +7,16 @@
 
 package numerics
 
+import algebra.instances.all.given
+import coulomb.ops.algebra.all.{*, given}
+// unit and value type policies for operations
+import coulomb.policy.standard.given
+import coulomb.*
+import coulomb.syntax.*
+import coulomb.units.constants.{Kilogram, Radian}
+import coulomb.units.mks.Newton
+import coulomb.ops.algebra.all.{*, given}
+import coulomb.units.mks.{Meter, Second}
 /**
  * AbstractODE provides a common superclass for ODESolvers.
  *
@@ -14,7 +24,7 @@ package numerics
  * @version 1.0
  */
 abstract class AbstractODESolver(val ode: ODE) extends ODESolver {
-  protected var stepSize: Double = 0.1 // parameter increment such as delta time
+  protected var stepSize = 0.1.withUnit[Second] // parameter increment such as delta time
   protected var numEqn: Int = 0        // number of equations
   //var ode: ODE               // object that computes rate
 
@@ -25,7 +35,7 @@ abstract class AbstractODESolver(val ode: ODE) extends ODESolver {
    */
   def this() = {
     this(null)
-    initialize(0.1)
+    initialize(0.1.withUnit[Second])
   }
 
   /**
@@ -37,7 +47,7 @@ abstract class AbstractODESolver(val ode: ODE) extends ODESolver {
    *
    * @return the step size
    */
-  def step(): Double
+  def step(): Quantity[Double, Second]
 
   /**
    * Sets the step size.
@@ -46,7 +56,7 @@ abstract class AbstractODESolver(val ode: ODE) extends ODESolver {
    *
    * @param _stepSize
    */
-  def setStepSize(_stepSize: Double): Unit = {
+  def setStepSize(_stepSize: Quantity[Double, Second]): Unit = {
     stepSize = _stepSize
   }
 
@@ -58,13 +68,13 @@ abstract class AbstractODESolver(val ode: ODE) extends ODESolver {
    *
    * @param _stepSize
    */
-  def initialize(_stepSize: Double): Unit = {
+  def initialize(_stepSize: Quantity[Double, Second]): Unit = {
     stepSize = _stepSize
     val state = ode.getState
     if (state == null) { // state vector not defined
       numEqn = 0
     } else {
-      numEqn = state.length
+      numEqn = state.x.length
     }
   }
 
@@ -75,7 +85,7 @@ abstract class AbstractODESolver(val ode: ODE) extends ODESolver {
    *
    * @return the step size
    */
-  def getStepSize(): Double = {
+  def getStepSize(): Quantity[Double, Second] = {
     stepSize
   }
 }

@@ -41,23 +41,21 @@ class BouncingBall(
   // Initialize position using Circle's method
   setXY(initialX.value, initialY.value)
 
-  def step(dt: Quantity[Double, Second]): Unit = {
+  def step(dt: Quantity[Double, Second]): Unit =
     val newX = getX.withUnit[Meter] + vx * dt
     val newY = getY.withUnit[Meter] + vy * dt
     vy -= g * dt
 
-    if (newX > WALL) {
+    if (newX > WALL)
       vx = -Math.abs(vx.value).withUnit[Meter / Second]
-    } else if (newX < -WALL) {
+    else if (newX < -WALL) {
       vx = Math.abs(vx.value).withUnit[Meter / Second]
     }
-    if (newY < 0.withUnit[Meter]) {
+    if (newY < 0.withUnit[Meter])
       vy = Math.abs(vy.value).withUnit[Meter / Second]
-    }
 
     // Update position using Circle's method
     setXY(newX.value, newY.value)
-  }
 }
 
 object BouncingBall {

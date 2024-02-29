@@ -7,11 +7,51 @@
 
 package numerics
 
+import algebra.instances.all.given
+import coulomb.ops.algebra.all.{*, given}
+// unit and value type policies for operations
+import coulomb.policy.standard.given
+import coulomb.*
+import coulomb.syntax.*
+import coulomb.units.constants.{Kilogram, Radian}
+import coulomb.units.mks.Newton
+
+import scala.collection.mutable.ListBuffer
+import scala.language.implicitConversions
+
+// unit definitions
+import coulomb.units.mks.{Meter, Second}
+
 /**
  * ODE defines a system of differential equations by providing access to the rate equations.
  *
  * @author       Wolfgang Christian
  */
+
+//case class State(
+//                  var x: Array[Quantity[Double, Meter]], // x0, x1, x2
+//                  var v: Array[Quantity[Double, Meter / Second]], // v1, v2, v3
+//                  var t: Quantity[Double, Second]
+//                )
+//
+//case class Rate(
+//                 var v: Array[Quantity[Double, Meter / Second]],
+//                 var a: Array[Quantity[Double, Meter / (Second ^ 2)]],
+//                 var t: Quantity[Double, Second]
+//               )
+
+class State(numEqn: Integer) {
+  var x = new Array[Quantity[Double, Meter]](numEqn) // x0, x1, x2
+  var v =  new Array[Quantity[Double, Meter / Second]](numEqn) // v0, v1, v2
+  var t = 0.0.withUnit[Second]
+}
+
+class Rate(numEqn: Integer) {
+  var v = new Array[Quantity[Double, Meter / Second]](numEqn)
+  var a = new  Array[Quantity[Double, Meter / (Second ^ 2)]](numEqn) // a0, a1, a2
+  var t = 0.0.withUnit[Second]
+}
+
 trait ODE {
   /**
    * Gets the state variables.
@@ -22,7 +62,7 @@ trait ODE {
    *
    * @return state  the state
    */
-  def getState: Array[Double]
+  def getState: State
 
   /**
    * Gets the rate of change using the argument's state variables.
@@ -30,10 +70,10 @@ trait ODE {
    * This method may be invoked many times with different intermediate states
    * as an ODESolver is carrying out the solution.
    *
-   * @param state  the state array
-   * @param rate   the rate array
+   * @param state the state array
+   * @param rate  the rate array
    */
-  def getRate(state: Array[Double], rate: Array[Double]): Unit
+  def getRate(state: State, rate: Rate): Unit
 }
 
 /*

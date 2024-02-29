@@ -11,6 +11,20 @@ package ch01
 import org.opensourcephysics.controls.AbstractAnimation
 import org.opensourcephysics.display._
 import org.opensourcephysics.display.axes.XAxis
+import coulomb.*
+import coulomb.syntax.*
+import coulomb.units.constants.Radian
+import org.opensourcephysics.controls.*
+import org.opensourcephysics.frames.*
+// algebraic definitions
+import algebra.instances.all.given
+import coulomb.ops.algebra.all.{*, given}
+// unit and value type policies for operations
+import coulomb.policy.standard.given
+
+import scala.language.implicitConversions
+// unit definitions
+import coulomb.units.mks.{Meter, Second}
 
 class SHOView extends AbstractAnimation {
   val plot: PlottingPanel = new PlottingPanel("time", "x", "x(t)")
@@ -32,20 +46,20 @@ class SHOView extends AbstractAnimation {
 
   override def initializeAnimation(): Unit = {
     super.initializeAnimation()
-    val x = control.getDouble("x0")
-    val v = control.getDouble("v0")
+    val x = control.getDouble("x0").withUnit[Meter]
+    val v = control.getDouble("v0").withUnit[Meter / Second]
 
-    sho.initialize(x, v, 0)
+    sho.initialize(x, v, 0.withUnit[Second])
     drawing.setMessage("t=0")
     stripChart.clear()
-    stripChart.append(0, x)
+    stripChart.append(0, x.value)
     drawing.repaint()
     plot.repaint()
   }
 
   protected override def doStep(): Unit = {
     sho.move() // moves the particle
-    stripChart.append(sho.getTime, sho.getX)
+    stripChart.append(sho.getTime.value, sho.getX)
     drawing.setMessage(s"t=${decimalFormat.format(sho.getTime)}")
     drawing.repaint()
     plot.repaint()
